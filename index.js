@@ -6,7 +6,7 @@ import * as mysql from 'mysql2/promise';
 import * as schedule from 'node-schedule';
 
 import serAccount from './onlineclassnotificator-firebase-adminsdk-nqqtp-5c35f4312d.js';
-import lunchData from './LunchInfo.json';
+import lunchData from './lunchData/LunchInfo.json';
 
 admin.initializeApp({
     credential: admin.credential.cert(serAccount)
@@ -137,8 +137,8 @@ const TuesdayPeriod7 = schedule.scheduleJob('35 15 * * 2', () => { sendMessages(
 const WednesdayPeriod1 = schedule.scheduleJob('35 8 * * 3', () => { sendMessages('Wednesday', 1) })
 const WednesdayPeriod2 = schedule.scheduleJob('35 9 * * 3', () => { sendMessages('Wednesday', 2) })
 const WednesdayPeriod3 = schedule.scheduleJob('35 10 * * 3', () => { sendMessages('Wednesday', 3) })
-const WednesdayPeriod4 = schedule.scheduleJob('15 11 * * 3', () => { sendMessages('Wednesday', 4) })
-const WednesdayPeriod5 = schedule.scheduleJob('40 13 * * 3', () => { sendMessages('Wednesday', 5) })
+const WednesdayPeriod4 = schedule.scheduleJob('35 11 * * 3', () => { sendMessages('Wednesday', 4) })
+const WednesdayPeriod5 = schedule.scheduleJob('35 13 * * 3', () => { sendMessages('Wednesday', 5) })
 const WednesdayPeriod6 = schedule.scheduleJob('35 14 * * 3', () => { sendMessages('Wednesday', 6) })
 const WednesdayPeriod7 = schedule.scheduleJob('35 15 * * 3', () => { sendMessages('Wednesday', 7) })
 
@@ -220,12 +220,12 @@ app.get('/203.json', async (req, res) => {
             res.send(timetable203);
             connection.release();
         }
-        catch (err) {
+        catch(err) {
             console.error(err);
             logger.error(err);
             res.send({res: "query failed"})
         }
-    } catch {
+    } catch(err) {
         console.error(err);
         logger.error(err);
         res.send({res: "sql server failed"})
