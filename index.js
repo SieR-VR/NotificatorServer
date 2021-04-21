@@ -217,7 +217,13 @@ app.get('/203.json', async (req, res) => {
         const connection = await pool.getConnection(async conn => conn);
         try {
             var [timetable203] = await connection.query("SELECT * FROM timetable203");
-            res.send(timetable203);
+            res.send([
+                [timetable203[0]['Monday'], timetable203[1]['Monday'], timetable203[2]['Monday'], timetable203[3]['Monday'], timetable203[4]['Monday'], timetable203[5]['Monday'], timetable203[6]['Monday']],
+                [timetable203[0]['Tuesday'], timetable203[1]['Tuesday'], timetable203[2]['Tuesday'], timetable203[3]['Tuesday'], timetable203[4]['Tuesday'], timetable203[5]['Tuesday'], timetable203[6]['Tuesday']],
+                [timetable203[0]['Wednesday'], timetable203[1]['Wednesday'], timetable203[2]['Wednesday'], timetable203[3]['Wednesday'], timetable203[4]['Wednesday'], timetable203[5]['Wednesday'], timetable203[6]['Wednesday']],
+                [timetable203[0]['Thursday'], timetable203[1]['Thursday'], timetable203[2]['Thursday'], timetable203[3]['Thursday'], timetable203[4]['Thursday'], timetable203[5]['Thursday'], timetable203[6]['Thursday']],
+                [timetable203[0]['Friday'], timetable203[1]['Friday'], timetable203[2]['Friday'], timetable203[3]['Friday'], timetable203[4]['Friday'], timetable203[5]['Friday'], timetable203[6]['Friday']],
+            ]);
             connection.release();
         }
         catch(err) {
