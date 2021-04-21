@@ -1,5 +1,7 @@
 import admin from 'firebase-admin';
 import express from 'express';
+import { logger } from './config/winston.js';
+
 import * as mysql from 'mysql2/promise';
 import * as schedule from 'node-schedule';
 
@@ -53,6 +55,7 @@ async function sendMessages(day, period) {
             var [periodClass] = await connection.query("SELECT " + day + " FROM timetable203 WHERE PK = ?", [period]);
         } catch(err) {
             console.error(err);
+            logger.error(err);
             connection.release();
         }
 
@@ -83,8 +86,6 @@ async function sendMessages(day, period) {
                     var [zoomNumber] = await connection.query("SELECT * FROM zoomnumber WHERE Name = ?", [teacherName[0][day]]);
                 }
 
-                console.log(zoomNumber);
-
                 let message = {
                     data: {
                         title: periodClass[0][day],
@@ -95,17 +96,25 @@ async function sendMessages(day, period) {
 
                 admin.messaging()
                     .send(message)
-                    .then(response => console.log(response))
-                    .catch(err => console.error(err))
+                    .then(response => {
+                        console.log(`Successfully sent message: ${response}`);
+                        logger.info(`Successfully sent message: ${response}`);
+                    })
+                    .catch(err => {
+                        console.error(`Error Sending message: ${err}`);
+                        logger.error(`Error Sending message: ${err}`);
+                    })
             }
             catch(err) {
                 console.error(err);
+                logger.error(err);
             }
         })
         connection.release();
     }
     catch(err) {
         console.error(err);
+        logger.error(err);
     }
 }
 
@@ -155,7 +164,8 @@ app.get('/', (req, res) => {
 })
 
 app.get('/login', async (req, res) => {
-    console.log("Login Attempt:", req.query.id);
+    console.log(`Login Attempt: ${req.query.id}`);
+    logger.info(`Login Attempt: ${req.query.id}`)
     
     try {
         const connection = await pool.getConnection(async conn => conn);
@@ -164,9 +174,11 @@ app.get('/login', async (req, res) => {
             connection.release();
         } catch(err) {
             console.error(err);
+            logger.error(err);
         }
     } catch(err) {
         console.error(err);
+        logger.error(err);
     }
     
     if(JSON.stringify(ID) === "[]") res.send({res: "No exist"})
@@ -174,7 +186,8 @@ app.get('/login', async (req, res) => {
 })
 
 app.get('/register', async (req, res) => {
-    console.log("Register Attempt:", req.query.id, req.query.token);
+    console.log(`Register Attempt: ${req.query.id}, ${req.query.token}`);
+    logger.info(`Register Attempt: ${req.query.id}, ${req.query.token}`);
 
     try {
         const connection = await pool.getConnection(async conn => conn);
@@ -191,9 +204,11 @@ app.get('/register', async (req, res) => {
             connection.release();
         } catch(err) {
             console.error(err);
+            logger.error(err);
         }
     } catch(err) {
         console.error(err);
+        logger.error(err);
     }
 })
 
@@ -207,10 +222,12 @@ app.get('/203.json', async (req, res) => {
         }
         catch (err) {
             console.error(err);
+            logger.error(err);
             res.send({res: "query failed"})
         }
     } catch {
         console.error(err);
+        logger.error(err);
         res.send({res: "sql server failed"})
     }
 })
@@ -225,5 +242,6 @@ app.get('/lunch.json', async (req, res) => {
 })
 
 app.listen(8888, () => {
-    console.log("server starting with 8888")
+    console.log("server starting with 8888");
+    logger.info("server starting with 8888");
 })
