@@ -101,8 +101,8 @@ async function sendMessages(day, period) {
                         logger.info(`Successfully sent message: ${response}`);
                     })
                     .catch(err => {
-                        console.error(`Error Sending message: ${err}`);
-                        logger.error(`Error Sending message: ${err}`);
+                        console.error(`Error Sending message - ${studentToken.studentid} : ${err}`);
+                        logger.error(`Error Sending message - ${studentToken.studentid} : ${err}`);
                     })
             }
             catch(err) {
@@ -158,8 +158,6 @@ const FridayPeriod5 = schedule.scheduleJob('35 13 * * 5', () => { sendMessages('
 const FridayPeriod6 = schedule.scheduleJob('35 14 * * 5', () => { sendMessages('Friday', 6) })
 
 app.get('/', (req, res) => {
-    sendMessage("20307")
-    sendMessage("20301")
     res.send("asdf");
 })
 
